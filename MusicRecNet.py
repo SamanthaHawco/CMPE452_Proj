@@ -21,7 +21,7 @@ class ConvBlock(nn.Module):
             return self.layerBlock(X)
         
 class MusicClassNet(nn.Module):
-    def __init__(self, base):
+    def __init__(self):
         super(MusicClassNet, self).__init__()
 
         # 3 layers of convolution, max pooling, and dropout
