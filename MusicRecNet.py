@@ -33,8 +33,9 @@ class MusicClassNet(nn.Module):
         self.flatten = nn.Flatten()
 
         # Fully connected layers
-        self.dense = nn.Linear(16*16*128, 128)  # input size based on output of flatten layer
-        self.dense_2 = nn.Linear(128, 10)         # output of size 10 for 10 genre classes
+        self.dense = nn.Linear(1200, 128)  # input size based on output of flatten layer
+        self.drop = nn.Dropout(dropout_rate = 0.2)
+        self.dense_2 = nn.Linear(128, 10)         # output size 10 due to 10 classification classes
         # Initialize weights
         self.init_weights()
 
@@ -42,6 +43,7 @@ class MusicClassNet(nn.Module):
         x = self.layer3(self.layer2(self.layer1(x)))
         x = self.flatten(x)
         x = F.relu(self.dense(x))
+        x = self.drop(x)
         x = self.dense_2(x)
 
         if not self.training:
