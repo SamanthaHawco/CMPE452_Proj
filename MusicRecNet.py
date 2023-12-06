@@ -9,7 +9,9 @@ class ConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels, dropout_rate = 0.2):
         super(ConvBlock, self).__init__()
 
+        self.conv = nn.Conv2d(in_channels, out_channels, (3, 3))
         self.layerBlock = nn.Sequential(
+            self.conv,
             nn.Conv2d(in_channels, out_channels, (3, 3)),
             nn.ReLU(),
             nn.ReflectionPad2d((1, 1, 1, 1)),
@@ -20,7 +22,12 @@ class ConvBlock(nn.Module):
 
     def forward (self, X):
         return self.layerBlock(X)
-        
+
+    def init_weights(self):
+        init.kaiming_normal_(self.conv.weight, mode='fan_out', nonlinearity='relu')
+        if self.conv.bias is not None:
+            init.constant_(self.conv.bias, 0)
+
 class MusicClassNet(nn.Module):
     def __init__(self):
         super(MusicClassNet, self).__init__()
@@ -47,19 +54,15 @@ class MusicClassNet(nn.Module):
         x = self.drop(x)
         x = self.dense_2(x)
 
-        if not self.training:
-            x = F.softmax(x, dim=1)
+        # if not self.training:
+        #     x = F.softmax(x, dim=1)
         
         return x
 
     def init_weights(self):
-        # initialize weights of model
-          # Initialize weights of model layers
+
         for layer in [self.layer1, self.layer2, self.layer3]:
-            if isinstance(layer, nn.Conv2d):
-                init.kaiming_normal_(layer.weight, mode='fan_out', nonlinearity='relu')
-                if layer.bias is not None:
-                    init.constant_(layer.bias, 0)
+            layer.init_weights()
 
         init.xavier_uniform_(self.dense.weight)
         init.constant_(self.dense.bias, 0)

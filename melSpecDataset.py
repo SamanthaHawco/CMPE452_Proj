@@ -42,7 +42,7 @@ class MelSpecDataset(Dataset):
         img_name = self.images[idx]
         img_path = os.path.join(self.dir, img_name)
         #image = Image.open(img_path)
-        image = Image.open(img_path).crop((50, 50, 432, 228))
+        image = Image.open(img_path).crop((125, 55, 900, 395))
         #plt.imshow(image)
         #plt.show()
         #image = self.normalize(img_path)
